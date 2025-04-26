@@ -4,7 +4,19 @@ A FastAPI-based gateway for OpenAI Assistants API that provides a clean interfac
 
 ## Concept
 
+Modern companies increasingly expose APIs and services to external agents (AI, bots, etc.), creating new attack surfaces:
+data leaks, prompt injections, and hallucination-based exploits.
+
+Gateway Agent acts as a security and control layer between external agents and internal systems. 
+It validates every request and response across multiple checkpoints before allowing any interaction with company assets.
+
 ![Diagram](design/Lavel_0_Gateway_Concept.png)
+
+At the same time, Gateway Agent provides a flexible integration layer that easily connects to existing company infrastructure,
+minimizing the need for major changes.
+
+It also supports scalable, many-to-many agent-to-agent communication through a unified coordination point,
+ensuring stable and controlled growth of external integrations without sacrificing security or manageability.
 
 ## Features
 

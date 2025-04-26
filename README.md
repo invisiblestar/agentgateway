@@ -18,6 +18,18 @@ minimizing the need for major changes.
 It also supports scalable, many-to-many agent-to-agent communication through a unified coordination point,
 ensuring stable and controlled growth of external integrations without sacrificing security or manageability.
 
+### Key Components
+
+The Gateway Agent is designed to be added on top of an existing company API Gateway infrastructure.
+Instead of replacing the current setup, it extends the traditional API Gateway model
+by introducing an intelligent control layer that enables secure, scalable agent-to-agent interactions.
+This allows companies to evolve from simple request-response APIs to dynamic,
+multi-agent communication architectures while maintaining full control and visibility. 
+
+We recommend complementing the Gateway Agent with AI Guardrails to introduce an additional mid-layer of security,
+capable of detecting and blocking sensitive data access, prompt injections,
+and hallucination attempts before they reach critical internal systems.
+
 ## Features
 
 - Async API endpoints for querying assistants

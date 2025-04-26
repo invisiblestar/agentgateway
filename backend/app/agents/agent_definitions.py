@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from ..services.database_service import get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool
 from ..config.agent_logger import AgentLogger
 import logging
+from ..services.gateway_policy import handle_user_query
+
 
 logger = logging.getLogger(__name__)
 agent_logger = AgentLogger(logger)
@@ -45,6 +47,20 @@ async def database_guardrail(ctx, agent, input_data):
     )
 
 # Gateway agent for general queries
+
+def policy_guardrail_fn(user_query: str) -> GuardrailFunctionOutput:
+
+    decision = handle_user_query(user_query)
+    if not decision["allow"]:
+        return GuardrailFunctionOutput(
+            triggered=True,
+            instructions=[  # это то, что вернётся клиенту
+                decision.get("message", "Query is blocked")
+            ]
+        )
+
+    return GuardrailFunctionOutput(triggered=False)
+
 gateway_agent = Agent(
     name="Gateway Agent",
     instructions="""You are a gateway agent that processes user queries.
@@ -52,6 +68,7 @@ gateway_agent = Agent(
         Otherwise, process the query directly.""",
     handoffs=[sql_agent],
     input_guardrails=[
+        InputGuardrail(guardrail_function=policy_guardrail_fn),
         InputGuardrail(guardrail_function=database_guardrail),
     ],
 )

@@ -29,6 +29,7 @@ ensuring stable and controlled growth of external integrations without sacrifici
 - Error handling and logging
 - CORS support
 - Environment-based configuration
+- Multitenancy
 
 ## Project Structure
 

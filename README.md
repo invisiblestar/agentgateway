@@ -2,6 +2,10 @@
 
 A FastAPI-based gateway for OpenAI Assistants API that provides a clean interface for managing and interacting with AI assistants, specifically focused on Postgres database-related queries.
 
+## Concept
+
+![Diagram](design/Lavel_0_Gateway_Concept.png)
+
 ## Features
 
 - Async API endpoints for querying assistants

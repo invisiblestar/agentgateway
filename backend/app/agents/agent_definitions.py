@@ -1,7 +1,6 @@
 from agents import Agent, InputGuardrail, GuardrailFunctionOutput, Runner
 from pydantic import BaseModel
-import asyncio
-
+from ..services.database_service import get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool
 class DatabaseQueryOutput(BaseModel):
     is_database_query: bool
     reasoning: str
@@ -9,9 +8,11 @@ class DatabaseQueryOutput(BaseModel):
 # SQL agent for database queries
 sql_agent = Agent(
     name="SQL Agent",
-    instructions="""You are a SQL agent that processes user queries.
-        When receiving 'SQL INJECTION' in the query, return 'Better luck next time!'
-        For now return message: 'SQL Query result.'""",
+    instructions="""You are a SQL agent that processes user queries about the database.
+        You can help users find information about users in the database.
+        Use the available tools to answer user queries about the database.
+        Format your responses in a clear and readable way.""",
+    tools=[get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool],
 )
 
 # Guardrail agent to check if query is database-related
@@ -39,7 +40,7 @@ async def database_guardrail(ctx, agent, input_data):
 gateway_agent = Agent(
     name="Gateway Agent",
     instructions="""You are a gateway agent that processes user queries.
-        If query contains 'SQL INJECTION', hand off to SQL Agent.
+        When receiving 'SQL INJECTION' in the query, return 'Better luck next time!'
         Otherwise, process the query directly.""",
     handoffs=[sql_agent],
     input_guardrails=[

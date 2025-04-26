@@ -1,11 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 import uvicorn
-import os
 from dotenv import load_dotenv
 from .api.routes import router as api_router
+from .config.database import init_db
 
 # Load environment variables
 load_dotenv()
@@ -41,6 +40,11 @@ async def http_exception_handler(request, exc):
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+# Initialize database on startup
+@app.on_event("startup")
+async def startup_event():
+    init_db()
 
 if __name__ == "__main__":
     uvicorn.run(

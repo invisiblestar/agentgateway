@@ -1,6 +1,12 @@
 from agents import Agent, InputGuardrail, GuardrailFunctionOutput, Runner
 from pydantic import BaseModel
 from ..services.database_service import get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool
+from ..config.agent_logger import AgentLogger
+import logging
+
+logger = logging.getLogger(__name__)
+agent_logger = AgentLogger(logger)
+
 class DatabaseQueryOutput(BaseModel):
     is_database_query: bool
     reasoning: str
@@ -14,6 +20,7 @@ sql_agent = Agent(
         Format your responses in a clear and readable way.""",
     tools=[get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool],
 )
+sql_agent.hooks = agent_logger
 
 # Guardrail agent to check if query is database-related
 guardrail_agent = Agent(
@@ -24,6 +31,7 @@ guardrail_agent = Agent(
         """,
     output_type=DatabaseQueryOutput,
 )
+guardrail_agent.hooks = agent_logger
 
 async def database_guardrail(ctx, agent, input_data):
     """
@@ -47,3 +55,4 @@ gateway_agent = Agent(
         InputGuardrail(guardrail_function=database_guardrail),
     ],
 )
+gateway_agent.hooks = agent_logger

@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from ..config.logging_config import setup_logging
 from ..agents.agent_definitions import gateway_agent, Runner
 from agents.exceptions import InputGuardrailTripwireTriggered
+from ..config.agent_logger import AgentLogger
 
 # Load environment variables
 load_dotenv()
@@ -21,6 +22,10 @@ class OpenAIService:
         self.logger.info("Initializing OpenAIService")
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         self.default_assistant_id = os.getenv("OPENAI_DEFAULT_ASSISTANT_ID")
+        
+        # Add hooks to agents
+        self.agent_logger = AgentLogger(self.logger)
+        gateway_agent.hooks = self.agent_logger
         self.logger.info("OpenAIService initialization completed")
 
     async def process_query(
@@ -39,7 +44,8 @@ class OpenAIService:
             context = {
                 "conversation_id": thread_id or "new_thread",
                 "assistant_id": assistant_id,
-                "query": query
+                "query": query,
+                "metadata": {"agent_logger": "DATANOMADS"},
             }
             
             # Run the gateway agent which will handle guardrail checks internally
@@ -48,9 +54,7 @@ class OpenAIService:
                 query,
                 context=context
             )
-            
-            # Log the completion and result
-            self.logger.info(f"Gateway Agent completed processing. Result: {result.final_output}")
+
             
             response = {
                 "response": result.final_output,

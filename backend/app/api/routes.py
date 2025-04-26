@@ -25,3 +25,10 @@ async def process_query(request: QueryRequest):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/gateway")
+async def gateway_endpoint(request: Request):
+    body = await request.json()
+    query = body.get("query")
+    result = await openai_service.process_query(query)
+    return JSONResponse(content=result, status_code=200 if result.get("status")=="completed" else 403)

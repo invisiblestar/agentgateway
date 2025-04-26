@@ -30,6 +30,14 @@ We recommend complementing the Gateway Agent with AI Guardrails to introduce an 
 capable of detecting and blocking sensitive data access, prompt injections,
 and hallucination attempts before they reach critical internal systems.
 
+### How it Works
+
+External agents send requests that first pass through the API Gateway for initial routing.
+The Gateway Agent verifies the content and context of each interaction,
+blocking unsafe requests and managing secure agent-to-agent communications.
+Internal responses are also checked for anomalies before being shared externally.
+
+
 ## Features
 
 - Async API endpoints for querying assistants

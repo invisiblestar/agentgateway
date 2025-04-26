@@ -1,21 +1,32 @@
 import logging
 from agents.lifecycle import AgentHooks
+from .websocket_manager import websocket_manager
 
 class AgentLogger(AgentHooks):
     def __init__(self, logger):
         self.logger = logger
 
     async def on_start(self, context, agent):
-        self.logger.info(f"Agent {agent.name} started with context: {context.context}")
+        log_message = f"Agent {agent.name} started with context: {context.context}"
+        self.logger.info(log_message)
+        await websocket_manager.broadcast(log_message)
 
     async def on_end(self, context, agent, output):
-        self.logger.info(f"Agent {agent.name} completed with output: {output}")
+        log_message = f"Agent {agent.name} completed with output: {output}"
+        self.logger.info(log_message)
+        await websocket_manager.broadcast(log_message)
 
     async def on_handoff(self, context, agent, source):
-        self.logger.info(f"Handoff from {source.name} to {agent.name}")
+        log_message = f"Handoff from {source.name} to {agent.name}"
+        self.logger.info(log_message)
+        await websocket_manager.broadcast(log_message)
 
     async def on_tool_start(self, context, agent, tool):
-        self.logger.info(f"Agent {agent.name} starting tool: {tool.name}")
+        log_message = f"Agent {agent.name} starting tool: {tool.name}"
+        self.logger.info(log_message)
+        await websocket_manager.broadcast(log_message)
 
     async def on_tool_end(self, context, agent, tool, result):
-        self.logger.info(f"Agent {agent.name} completed tool {tool.name} with result: {result}") 
+        log_message = f"Agent {agent.name} completed tool {tool.name} with result: {result}"
+        self.logger.info(log_message)
+        await websocket_manager.broadcast(log_message) 

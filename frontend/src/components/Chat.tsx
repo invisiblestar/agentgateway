@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, TextField, Button, Paper, Typography, Container } from '@mui/material';
+import { Box, TextField, Button, Paper, Typography } from '@mui/material';
 
 interface Message {
   text: string;
@@ -41,58 +41,54 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ height: '100vh', py: 4 }}>
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            height: 'calc(100% - 80px)', 
-            display: 'flex', 
-            flexDirection: 'column',
-            p: 2
-          }}
-        >
-          <Box sx={{ 
-            flexGrow: 1, 
-            overflowY: 'auto',
-            mb: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1
-          }}>
-            {messages.map((message, index) => (
-              <Box
-                key={index}
-                sx={{
-                  alignSelf: message.isResponse ? 'flex-start' : 'flex-end',
-                  maxWidth: '70%',
-                  bgcolor: message.isResponse ? 'grey.100' : 'primary.main',
-                  color: message.isResponse ? 'text.primary' : 'white',
-                  p: 2,
-                  borderRadius: 2
-                }}
-              >
-                <Typography>{message.text}</Typography>
-              </Box>
-            ))}
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        p: 2
+      }}
+    >
+      <Box sx={{ 
+        flexGrow: 1, 
+        overflowY: 'auto',
+        mb: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1
+      }}>
+        {messages.map((message, index) => (
+          <Box
+            key={index}
+            sx={{
+              alignSelf: message.isResponse ? 'flex-start' : 'flex-end',
+              maxWidth: '70%',
+              bgcolor: message.isResponse ? 'grey.100' : 'primary.main',
+              color: message.isResponse ? 'text.primary' : 'white',
+              p: 2,
+              borderRadius: 2
+            }}
+          >
+            <Typography>{message.text}</Typography>
           </Box>
-          
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1 }}>
-            <TextField
-              fullWidth
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              variant="outlined"
-              size="small"
-            />
-            <Button type="submit" variant="contained">
-              Send
-            </Button>
-          </Box>
-        </Paper>
+        ))}
       </Box>
-    </Container>
+      
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1 }}>
+        <TextField
+          fullWidth
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+          variant="outlined"
+          size="small"
+        />
+        <Button type="submit" variant="contained">
+          Send
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 

@@ -45,8 +45,9 @@ class OpenAIService:
                 "conversation_id": thread_id or "new_thread",
                 "assistant_id": assistant_id,
                 "query": query,
-                "metadata": {"agent_logger": "DATANOMADS"},
             }
+            
+            self.logger.info(f"Starting Runner execution with context: {context}")
             
             # Run the gateway agent which will handle guardrail checks internally
             result = await Runner.run(
@@ -55,6 +56,9 @@ class OpenAIService:
                 context=context
             )
 
+            self.logger.info(f"Runner execution completed. Final output: {result.final_output}")
+            if hasattr(result, 'trace'):
+                self.logger.debug(f"Runner trace: {result.trace}")
             
             response = {
                 "response": result.final_output,
@@ -62,6 +66,7 @@ class OpenAIService:
                 "trace": result.trace if hasattr(result, 'trace') else None
             }
             
+            self.logger.info(f"Prepared response with status: {response['status']}")
             return response
             
         except InputGuardrailTripwireTriggered as e:

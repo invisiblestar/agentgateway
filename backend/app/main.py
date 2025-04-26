@@ -1,10 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 from dotenv import load_dotenv
 from .api.routes import router as api_router
 from .config.database import init_db
+from .config.websocket_manager import websocket_manager
+import logging
 
 # Load environment variables
 load_dotenv()
@@ -40,6 +42,17 @@ async def http_exception_handler(request, exc):
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+# WebSocket endpoint for logs
+@app.websocket("/ws/logs")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket_manager.connect(websocket)
+    try:
+        while True:
+            # Keep the connection alive
+            await websocket.receive_text()
+    except:
+        websocket_manager.disconnect(websocket)
 
 # Initialize database on startup
 @app.on_event("startup")

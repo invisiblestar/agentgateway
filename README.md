@@ -70,48 +70,67 @@ agentgateway/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py           # FastAPI application
-│   │   ├── api/
-│   │   │   └── routes.py     # API endpoints
-│   │   ├── config/
-│   │   │   └── logging_config.py  # Logging configuration
-│   │   └── services/
-│   │       └── openai_service.py  # OpenAI integration and agents
-│   ├── requirements.txt
-│   └── .env.example
+│   │   ├── api/              # API endpoints
+│   │   ├── agents/           # AI agent implementations
+│   │   ├── config/           # Configuration files
+│   │   ├── models/           # Data models
+│   │   └── services/         # Business logic services
+│   ├── logs/                 # Log files
+│   ├── requirements.txt      # Python dependencies
+│   ├── pyproject.toml        # Python project configuration
+│   └── Makefile             # Backend build commands
+├── frontend/
+│   ├── src/                  # Next.js source code
+│   ├── package.json          # Node.js dependencies
+│   ├── tsconfig.json         # TypeScript configuration
+│   └── tailwind.config.ts    # Tailwind CSS configuration
+├── design/                   # Design documents and diagrams
+├── nginx.conf               # Nginx configuration
+├── Makefile                 # Main project build commands
 └── README.md
 ```
 
 ## Setup
 
-1. Create a virtual environment:
+### Using Makefile
+
+The project includes a comprehensive Makefile that simplifies common development tasks. Here are the main commands:
+
+1. Install all dependencies and setup the project:
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   make all
    ```
 
-2. Install dependencies:
+2. Nginx management (Linux only):
+   ```bash
+   make nginx action=all
+
+   ```
+
+3. Env:
+   ```bash
+   # Create .env file from example
+   make setup-env
+   ```
+
+### Running the Application
+
+1. Backend 
+
    ```bash
    cd backend
-   pip install -r requirements.txt
+   python -B -m uvicorn app.main:app --reload
    ```
 
-3. Configure environment:
+1. Frontend 
+
    ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and add your OpenAI API key and other configuration.
-
-## Running the Server
-
-1. Start the development server:
-   ```bash
-   cd backend
-   python -m uvicorn app.main:app --reload
+   cd frontend
+   npm run dev
    ```
 
-2. Access the API documentation:
-   - Swagger UI: http://localhost:8000/docs
-   - ReDoc: http://localhost:8000/redoc
+3. Access the application:
+   - Frontend: http://localhost:3000
 
 ## API Endpoints
 
@@ -127,12 +146,6 @@ Content-Type: application/json
 }
 ```
 
-#### Query Processing Flow
-1. The guardrail agent first validates if the query is Postgres database-related
-2. If the query is not database-related, returns an error message
-3. If database-related, the query is processed by the gateway agent
-4. The gateway agent may hand off to the SQL agent for specific SQL-related tasks
-
 ### Response Format
 ```json
 {
@@ -142,34 +155,6 @@ Content-Type: application/json
 }
 ```
 
-### Create Assistant
-```http
-POST /api/assistants
-Content-Type: application/json
-
-{
-    "name": "Assistant Name",
-    "instructions": "Assistant instructions",
-    "tools": [{"type": "code_interpreter"}]
-}
-```
-
 ## Environment Variables
 
 - `OPENAI_API_KEY`: Your OpenAI API key
-- `OPENAI_DEFAULT_ASSISTANT_ID`: Default assistant ID to use
-- `PORT`: Server port (default: 8000)
-- `HOST`: Server host (default: 0.0.0.0)
-- `ENVIRONMENT`: Development/production environment
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-MIT

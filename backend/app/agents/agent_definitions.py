@@ -11,6 +11,10 @@ class DatabaseQueryOutput(BaseModel):
     is_database_query: bool
     reasoning: str
 
+class AgentOutput(BaseModel):
+    output: str
+    reasoning: str
+
 # SQL agent for database queries
 sql_agent = Agent(
     name="SQL Agent",
@@ -19,6 +23,7 @@ sql_agent = Agent(
         Use the available tools to answer user queries about the database.
         Format your responses in a clear and readable way.""",
     tools=[get_all_users_tool, get_user_by_username_tool, get_user_by_email_tool],
+    output_type=AgentOutput,
 )
 sql_agent.hooks = agent_logger
 
@@ -54,5 +59,6 @@ gateway_agent = Agent(
     input_guardrails=[
         InputGuardrail(guardrail_function=database_guardrail),
     ],
+    output_type=AgentOutput,
 )
 gateway_agent.hooks = agent_logger

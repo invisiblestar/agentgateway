@@ -8,6 +8,7 @@ from ..config.logging_config import setup_logging
 from ..agents.agent_definitions import gateway_agent, Runner
 from agents.exceptions import InputGuardrailTripwireTriggered
 from ..config.agent_logger import AgentLogger
+from ..config.websocket_manager import websocket_manager
 
 # Load environment variables
 load_dotenv()
@@ -57,6 +58,7 @@ class OpenAIService:
             )
 
             self.logger.info(f"Runner execution completed. Final output: {result.final_output}")
+            await websocket_manager.broadcast("Runner execution completed.")
             if hasattr(result, 'trace'):
                 self.logger.debug(f"Runner trace: {result.trace}")
             

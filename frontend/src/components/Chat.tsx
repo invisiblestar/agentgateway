@@ -30,8 +30,17 @@ const Chat: React.FC = () => {
 
       const data = await response.json();
       
-      // Add response message
-      setMessages(prev => [...prev, { text: data.response, isResponse: true }]);
+      let responseText;
+      if (typeof data.response === 'object' && data.response !== null) {
+        // If the backend returns {output, reasoning}
+        responseText = data.response.output;
+        if (data.response.reasoning) {
+          responseText += `\n\nReasoning: ${data.response.reasoning}`;
+        }
+      } else {
+        responseText = data.response;
+      }
+      setMessages(prev => [...prev, { text: responseText, isResponse: true }]);
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, { text: 'Error processing request', isResponse: true }]);

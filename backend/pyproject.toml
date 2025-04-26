@@ -1,0 +1,6 @@
+[tool.python]
+py_compile = false
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-p no:cacheprovider" 

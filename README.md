@@ -32,10 +32,22 @@ and hallucination attempts before they reach critical internal systems.
 
 ### How it Works
 
-External agents send requests that first pass through the API Gateway for initial routing.
-The Gateway Agent verifies the content and context of each interaction,
+External agents send requests that first pass through the existing API Gateway for initial routing.
+The Gateway Agent then verifies the content and context of each interaction,
 blocking unsafe requests and managing secure agent-to-agent communications.
 Internal responses are also checked for anomalies before being shared externally.
+
+The system architecture is designed for easy horizontal scalability:
+multiple Gateway Agent instances can be deployed to handle high volumes of agent-to-agent
+interactions while maintaining stable latency and high availability.
+This enables the platform to support a growing number of agents and conversations without performance degradation.
+
+We recommend monitoring key system metrics such as:
+- Request validation time (ms)
+- Anomaly detection rate (%)
+- Average agent-to-agent response latency (ms)
+- System throughput (requests per second)
+- Error rates (blocked vs allowed requests)
 
 
 ## Features
